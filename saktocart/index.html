@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SaktoCart Beta</title>
+    <meta name="description" content="Download the SaktoCart beta for Android: a grocery list that keeps your total, so you know what you'll pay before the cashier." />
+    <meta property="og:title" content="SaktoCart Beta for Android" />
+    <meta property="og:description" content="A grocery list that keeps your total, so you know what you'll pay before the cashier." />
+    <meta property="og:image" content="https://chusei-creates.github.io/saktocart/icon.png" />
+    <link rel="icon" href="icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --page: #fff9f1;
+        --paper: #ffffff;
+        --ink: #1f1d1b;
+        --soft: #57534f;
+        --line: #e8e2da;
+        --primary: #b04a12;
+        --on-primary: #ffffff;
+        --tint: #fce7d6;
+        --lemon: #fbe27a;
+        --mint: #bfe3a9;
+        --sky: #acd0ec;
+        --note-soft: #3f3b37;
+        --budget: #0f5a31;
+        --shadow: 0 1px 2px rgba(31, 29, 27, 0.06), 0 8px 24px rgba(31, 29, 27, 0.08);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --page: #1b1b1d;
+          --paper: #242426;
+          --ink: #e9e7e4;
+          --soft: #c4c0bb;
+          --line: #3a3a3d;
+          --primary: #ff9d5c;
+          --on-primary: #2a1200;
+          --tint: #40302a;
+          --lemon: #6b4e05;
+          --mint: #2a5232;
+          --sky: #1f4c6b;
+          --note-soft: #e2ded9;
+          --budget: #b4edc8;
+          --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font: 400 17px/1.6 Nunito, system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main { max-width: 960px; margin: 0 auto; padding: 20px 16px 48px; }
+      a { color: var(--primary); }
+
+      .top { display: flex; align-items: center; gap: 10px; }
+      .top img { width: 40px; height: 40px; border-radius: 10px; }
+      .top strong { font-weight: 900; font-size: 20px; letter-spacing: -0.01em; }
+      .pill {
+        margin-left: auto;
+        padding: 4px 12px;
+        border-radius: 999px;
+        background: var(--tint);
+        color: var(--primary);
+        font-weight: 800;
+        font-size: 13px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .hero {
+        display: grid;
+        gap: 32px;
+        align-items: center;
+        padding: 40px 0 48px;
+      }
+      @media (min-width: 760px) {
+        .hero { grid-template-columns: 1.1fr 0.9fr; padding: 64px 0; }
+      }
+      h1 {
+        font-weight: 900;
+        font-size: clamp(34px, 6vw, 52px);
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 0 0 16px;
+        text-wrap: balance;
+      }
+      .lead { font-size: 19px; color: var(--soft); margin: 0 0 28px; max-width: 34ch; }
+      .download {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 28px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: var(--on-primary);
+        font-weight: 800;
+        font-size: 19px;
+        text-decoration: none;
+        box-shadow: var(--shadow);
+        transition: transform 0.15s ease;
+      }
+      .download:hover { transform: translateY(-1px); }
+      .download:active { transform: translateY(1px); }
+      .download:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+      .download svg { width: 22px; height: 22px; flex: none; }
+      .meta { margin: 12px 0 0; color: var(--soft); font-size: 15px; }
+      .desktop-note { display: none; margin: 16px 0 0; font-size: 15px; color: var(--soft); }
+      @media (hover: hover) and (pointer: fine) { .desktop-note { display: block; } }
+
+      /* A few list cards, drawn like the app's own notes. */
+      .notes { position: relative; height: 360px; max-width: 380px; width: 100%; margin: 0 auto; }
+      .note {
+        position: absolute;
+        padding: 14px 16px;
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        color: var(--ink);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .note b { display: block; font-weight: 800; font-size: 16px; margin-bottom: 6px; }
+      .note .row { display: flex; justify-content: space-between; gap: 8px; }
+      .note .row span:last-child { font-variant-numeric: tabular-nums; }
+      .note .done { color: var(--note-soft); text-decoration: line-through; }
+      .note .total {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(31, 29, 27, 0.15);
+        font-weight: 800;
+      }
+      .note .total small { display: block; font-weight: 700; font-size: 13px; color: var(--budget); }
+      .n1 { background: var(--lemon); left: 0; top: 24px; width: 58%; transform: rotate(-3deg); z-index: 1; }
+      .n2 { background: var(--mint); right: 0; top: 0; width: 38%; transform: rotate(3deg); }
+      .n3 { background: var(--sky); left: 4%; bottom: 0; width: 54%; transform: rotate(-1.5deg); }
+      .gami {
+        position: absolute;
+        right: 4%;
+        bottom: 0;
+        width: 104px;
+        height: auto;
+        filter: drop-shadow(0 6px 10px rgba(31, 29, 27, 0.18));
+      }
+
+      h2 { font-weight: 900; font-size: 26px; letter-spacing: -0.01em; margin: 0 0 16px; }
+      .panel {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+      ol.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; display: grid; gap: 18px; }
+      ol.steps li { counter-increment: step; display: grid; grid-template-columns: 36px 1fr; gap: 12px; }
+      ol.steps li::before {
+        content: counter(step);
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--tint);
+        color: var(--primary);
+        font-weight: 900;
+      }
+      ol.steps strong { display: block; font-weight: 800; }
+      ol.steps p { margin: 0; color: var(--soft); }
+      .tip {
+        margin-top: 20px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: var(--tint);
+        font-size: 16px;
+      }
+      .tip strong { font-weight: 800; }
+
+      .grid { display: grid; gap: 20px; }
+      @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } .grid .panel { margin: 0; } }
+      .panel h3 { font-weight: 900; font-size: 20px; margin: 0 0 10px; }
+      .panel ul { margin: 0; padding-left: 20px; }
+      .panel li { margin-bottom: 6px; }
+      .panel p { margin: 0 0 10px; }
+      .panel p:last-child { margin-bottom: 0; }
+      kbd {
+        font: inherit;
+        font-weight: 800;
+        padding: 1px 8px;
+        border-radius: 6px;
+        border: 1px solid var(--line);
+        background: var(--page);
+        white-space: nowrap;
+      }
+
+      footer {
+        margin-top: 40px;
+        color: var(--soft);
+        font-size: 15px;
+        text-align: center;
+      }
+      footer a { font-weight: 700; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .download { transition: none; }
+        .download:hover, .download:active { transform: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="top">
+        <img src="icon.png" alt="" width="40" height="40" />
+        <strong>SaktoCart</strong>
+        <span class="pill">Beta</span>
+      </header>
+
+      <section class="hero">
+        <div>
+          <h1>Know your total before the cashier.</h1>
+          <p class="lead">
+            A grocery list that adds up as you shop. Type items the way you'd say them, set a budget, and tick
+            things into your cart.
+          </p>
+          <a
+            class="download"
+            href="https://expo.dev/artifacts/eas/_6KPvqsJ91amlPX8sXR-q1js-kLk9acfFWp5rt5YxUM.apk"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 4v11" />
+              <path d="m7 10 5 5 5-5" />
+              <path d="M5 20h14" />
+            </svg>
+            Download for Android
+          </a>
+          <p class="meta">Beta 1.0.0 · 117 MB · Android 7 or newer</p>
+          <p class="desktop-note">
+            On a computer? Open <strong>chusei-creates.github.io/saktocart</strong> on your Android phone instead.
+          </p>
+        </div>
+
+        <div class="notes" aria-hidden="true">
+          <div class="note n2">
+            <b>Botika</b>
+            <div class="row"><span>Biogesic</span><span>₱60</span></div>
+            <div class="row"><span>Vit. C</span><span>₱85</span></div>
+          </div>
+          <div class="note n1">
+            <b>Palengke</b>
+            <div class="row done"><span>Bigas 2 kg</span><span>₱112</span></div>
+            <div class="row done"><span>Galunggong ½ kg</span><span>₱90</span></div>
+            <div class="row"><span>Kamatis</span><span>₱40</span></div>
+            <div class="total">₱242 of ₱300 <small>₱58 left</small></div>
+          </div>
+          <div class="note n3">
+            <b>Grocery</b>
+            <div class="row"><span>Milo pack x2</span><span>₱220</span></div>
+            <div class="row"><span>Coke 1.5L</span><span>₱75</span></div>
+          </div>
+          <img class="gami" src="gami-wink.webp" alt="" width="104" height="135" />
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="install">
+        <h2 id="install">How to install</h2>
+        <ol class="steps">
+          <li>
+            <div>
+              <strong>Download the app</strong>
+              <p>Tap the orange button on your Android phone. If your browser warns that the file might be harmful, tap <kbd>Download anyway</kbd>.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Open the file</strong>
+              <p>Tap the finished download. If your phone asks, let your browser install apps (<kbd>Settings</kbd> → <kbd>Allow from this source</kbd>), then go back.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Tap Install</strong>
+              <p>Google Play Protect may say it doesn't know this app, because it isn't on Google Play yet. Tap <kbd>More details</kbd> → <kbd>Install anyway</kbd>.</p>
+            </div>
+          </li>
+        </ol>
+        <p class="tip">
+          <strong>Pro is free for testers.</strong> In the app, open <kbd>Settings</kbd> → <kbd>Tester build</kbd> and turn on
+          <kbd>Unlock Pro</kbd> to try templates, spending insights, exports, automatic backup and themes.
+        </p>
+      </section>
+
+      <div class="grid">
+        <section class="panel" aria-labelledby="try">
+          <h3 id="try">What to try</h3>
+          <ul>
+            <li>Go through the short tutorial when you first open it.</li>
+            <li>Make a list for your next real trip. Type items like you'd text them: "2 kilo bigas 56".</li>
+            <li>Paste a list from Messenger or Notes.</li>
+            <li>Set a budget, tick items into your cart, then finish the trip.</li>
+            <li>Set a reminder for your next trip.</li>
+          </ul>
+        </section>
+        <section class="panel" aria-labelledby="feedback">
+          <h3 id="feedback">Tell me what you find</h3>
+          <p>
+            Something confusing, broken, or an item it read wrong? Send a screenshot through
+            <kbd>Settings</kbd> → <kbd>Help &amp; tips</kbd> → <kbd>Message the maker</kbd>, or on the
+            <a href="https://facebook.com/chusei.exe.dev">Facebook Page</a>.
+          </p>
+          <p>
+            Your lists stay on your phone: no account, no ads. Before you uninstall, export them in
+            <kbd>Settings</kbd> → <kbd>Data</kbd> so you can bring them back.
+          </p>
+        </section>
+      </div>
+
+      <footer>
+        <p>
+          Made in the Philippines by chusei.exe ·
+          <a href="privacy/">Privacy policy</a>
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
